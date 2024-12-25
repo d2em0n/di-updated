@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TagsCloudContainer.TextProviders
+namespace TagsCloudContainer.TextProviders;
+
+public class TxtTextProvider : ITextProvider
 {
-    internal class TxtTextProvider : ITextProvider
+    public string ReadFile(string filePath)
     {
-        public string ReadFile(string filePath)
-        {
-            throw new NotImplementedException();
-        }
+        if (!File.Exists(filePath)) throw new FileNotFoundException();
+        return File.ReadAllText(filePath).ToLower();
     }
 }
