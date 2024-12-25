@@ -8,6 +8,6 @@ namespace TagsCloudContainer.WordFilters
 {
     public interface IWordFilter
     {
-        public bool Pass(Word word);
+        public bool Skips(Word word);
     }
 }

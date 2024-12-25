@@ -17,7 +17,7 @@ namespace TagsCloudContainer.WordFilters
             "оно",
             "они"
         ];
-        public bool Pass(Word word)
+        public bool Skips(Word word)
         {
             return !_words.Contains(word.Value);
         }
