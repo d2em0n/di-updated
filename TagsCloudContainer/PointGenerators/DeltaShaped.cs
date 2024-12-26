@@ -26,7 +26,7 @@ namespace TagsCloudContainer.PointGenerators
             }
         }
 
-        public IEnumerable<(double, double)> Delta()
+        public static IEnumerable<(double, double)> Delta()
         {
             for (var t = 0.0; t < 2 * Math.PI; t += Math.PI / 180)
             {
