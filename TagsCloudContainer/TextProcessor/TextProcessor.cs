@@ -11,10 +11,9 @@ namespace TagsCloudContainer.TextProcessor
 {
     public class TextProcessor : ITextProcessor
     {
-        public readonly Dictionary<Word, int> Words;
-        public TextProcessor(string path, ITextProvider provider, params IWordFilter[] filters)
+        public Dictionary<Word, int> Words(string path, ITextProvider provider, params IWordFilter[] filters)
         {
-            Words = [];
+            var words = new Dictionary<Word, int>();
             foreach (var word in GetWordsFromString(provider.ReadFile(path)))
             {
                 var flag = true;
@@ -25,11 +24,12 @@ namespace TagsCloudContainer.TextProcessor
                     flag = false;
                 }
                 if (flag == false) continue;
-                if (!Words.TryGetValue(word, out var _))
-                    Words.Add(word, 1);
+                if (!words.TryGetValue(word, out var _))
+                    words.Add(word, 1);
                 else
-                    Words[word] += 1;
+                    words[word] += 1;
             }
+            return words;
         }
 
         private static IEnumerable<Word> GetWordsFromString(string input)

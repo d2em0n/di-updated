@@ -14,12 +14,12 @@ namespace TagsCloudContainer.Tests
         [Test]
         public void Process()
         {
-            var processor = new TextProcessor.TextProcessor(@"TextFile1.txt",
+            var result = new TextProcessor.TextProcessor().Words(@"TextFile1.txt",
                 new TxtTextProvider(), new SimpleFilter());
 
-            processor.Words.Count.Should().Be(3);
+            result.Count.Should().Be(3);
 
-            processor.Words.MaxBy(word => word.Value).Value.Should().Be(3);
+            result.MaxBy(word => word.Value).Value.Should().Be(3);
         }
     }
 }

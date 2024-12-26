@@ -9,8 +9,8 @@ namespace TagsCloudContainer
         {
             var provider = new TxtTextProvider();
             var filter = new SimpleFilter();
-            var processor = new TextProcessor.TextProcessor(@"C:\test\test.txt", provider, filter);
-            foreach (var word in processor.Words)
+            var processor = new TextProcessor.TextProcessor();
+            foreach (var word in processor.Words(@"C:\test\test.txt", provider, filter))
             {
                 Console.WriteLine(word.Key.Value + " : " + word.Value);
             }
