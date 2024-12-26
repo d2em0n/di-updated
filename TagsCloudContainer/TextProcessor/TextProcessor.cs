@@ -25,7 +25,7 @@ namespace TagsCloudContainer.TextProcessor
                     flag = false;
                 }
                 if (flag == false) continue;
-                if (!Words.TryGetValue(word, out var value))
+                if (!Words.TryGetValue(word, out var _))
                     Words.Add(word, 1);
                 else
                     Words[word] += 1;
@@ -34,8 +34,11 @@ namespace TagsCloudContainer.TextProcessor
 
         private static IEnumerable<Word> GetWordsFromString(string input)
         {
-            return Regex.Split(input, @"\W+")
-                .Select(s => new Word(s));
+            var regex = new Regex("\\b(?:\\w|-)+\\b");
+
+            return regex.Matches(input)
+                .Cast<Match>()
+                .Select(w => new Word(w.Value));
         }
     }
 }

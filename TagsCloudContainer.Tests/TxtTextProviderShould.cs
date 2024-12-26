@@ -5,7 +5,7 @@ namespace TagsCloudContainer.Tests
 {
     public class TxtTextProviderShould
     {
-        private ITextProvider _provider;
+        private TxtTextProvider _provider;
         [SetUp]
         public void Setup()
         {
@@ -15,9 +15,18 @@ namespace TagsCloudContainer.Tests
         [Test]
         public void ThrowException()
         {
-            Action act = () => _provider.ReadFile("123.txt");
+            Action act = () => _provider.ReadFile("NotExisted.txt");
 
             act.Should().Throw<FileNotFoundException>();
+        }
+
+        [Test]
+        public void ReturnLowerCase()
+        {
+            var result = _provider.ReadFile("TextFile1.txt");
+
+            foreach (var c in result.Where(c => char.IsLetter(c)))
+                char.IsLower(c).Should().BeTrue();
         }
     }
 }
