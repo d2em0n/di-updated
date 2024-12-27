@@ -10,9 +10,9 @@ namespace TagsCloudContainer
         {
             var provider = new TxtTextProvider();
             var filter = new BoringWordFilter();
-            var processor = new TextProcessor.TextProcessor();
             var parser = new RegexParser();
-            foreach (var word in processor.Words(@"C:\test\test.txt", provider, parser, filter))
+            var processor = new TextProcessor.TextProcessor(@"C:\test\test.txt", provider, parser, filter);
+            foreach (var word in processor.Words())
             {
                 Console.WriteLine(word.Key.Value + " : " + word.Value);
             }

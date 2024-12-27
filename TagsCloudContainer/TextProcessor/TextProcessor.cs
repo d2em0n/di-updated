@@ -5,9 +5,10 @@ using TagsCloudContainer.WordFilters;
 
 namespace TagsCloudContainer.TextProcessor
 {
-    public class TextProcessor : ITextProcessor
+    public class TextProcessor(string path, ITextProvider provider, IStringParser parser,
+        params IWordFilter[] filters) : ITextProcessor
     {
-        public Dictionary<Word, int> Words(string path, ITextProvider provider, IStringParser parser, params IWordFilter[] filters)
+        public Dictionary<Word, int> Words()
         {
             var words = new Dictionary<Word, int>();
             foreach (var word in parser.GetWordsFromString(provider.ReadFile(path)))

@@ -1,9 +1,12 @@
-﻿using TagsCloudContainer.TextProcessor;
+﻿using TagsCloudContainer.StringParsers;
+using TagsCloudContainer.TextProcessor;
+using TagsCloudContainer.TextProviders;
+using TagsCloudContainer.WordFilters;
 
 namespace TagsCloudContainer.TagGenerator
 {
     public interface ITagsGenerator
     {
-        IEnumerable<Tag> GetTags(ITextProcessor processor);
+        IEnumerable<Tag> GenerateTags();
     }
 }
