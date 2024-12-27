@@ -8,7 +8,7 @@ namespace TagsCloudContainer
         static void Main(string[] args)
         {
             var provider = new TxtTextProvider();
-            var filter = new SimpleFilter();
+            var filter = new BoringWordFilter();
             var processor = new TextProcessor.TextProcessor();
             foreach (var word in processor.Words(@"C:\test\test.txt", provider, filter))
             {

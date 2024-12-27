@@ -1,5 +1,5 @@
-using TagsCloudContainer.TextProviders;
 using FluentAssertions;
+using TagsCloudContainer.TextProviders;
 
 namespace TagsCloudContainer.Tests
 {

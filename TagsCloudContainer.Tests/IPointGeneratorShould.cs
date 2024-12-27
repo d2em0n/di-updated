@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FluentAssertions;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using FluentAssertions;
-using FluentAssertions.Execution;
 using TagsCloudContainer.PointGenerators;
 
 namespace TagsCloudContainer.Tests

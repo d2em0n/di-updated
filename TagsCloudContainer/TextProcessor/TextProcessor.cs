@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using TagsCloudContainer.TextProviders;
 using TagsCloudContainer.WordFilters;
 
@@ -16,18 +11,12 @@ namespace TagsCloudContainer.TextProcessor
             var words = new Dictionary<Word, int>();
             foreach (var word in GetWordsFromString(provider.ReadFile(path)))
             {
-                var flag = true;
-                foreach (var filter in filters)
-                {
-                    if (flag == false) break;
-                    if (filter.Skips(word)) continue;
-                    flag = false;
-                }
-                if (flag == false) continue;
-                if (!words.TryGetValue(word, out var _))
-                    words.Add(word, 1);
-                else
-                    words[word] += 1;
+                if (filters.All(filter => !filter.Skips(word)))
+                    continue;
+
+                if (!words.ContainsKey(word))
+                    words.Add(word, 0);
+                words[word]++;
             }
             return words;
         }
