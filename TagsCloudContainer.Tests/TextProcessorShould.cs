@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using TagsCloudContainer.StringParsers;
 using TagsCloudContainer.TextProviders;
 using TagsCloudContainer.WordFilters;
 
@@ -10,7 +11,7 @@ namespace TagsCloudContainer.Tests
         public void Process()
         {
             var result = new TextProcessor.TextProcessor().Words(@"TextFile1.txt",
-                new TxtTextProvider(), new BoringWordFilter());
+                new TxtTextProvider(), new RegexParser(),new BoringWordFilter());
 
             result.Count.Should().Be(3);
 

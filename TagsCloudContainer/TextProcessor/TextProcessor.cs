@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using TagsCloudContainer.StringParsers;
 using TagsCloudContainer.TextProviders;
 using TagsCloudContainer.WordFilters;
 
@@ -6,10 +7,10 @@ namespace TagsCloudContainer.TextProcessor
 {
     public class TextProcessor : ITextProcessor
     {
-        public Dictionary<Word, int> Words(string path, ITextProvider provider, params IWordFilter[] filters)
+        public Dictionary<Word, int> Words(string path, ITextProvider provider, IStringParser parser, params IWordFilter[] filters)
         {
             var words = new Dictionary<Word, int>();
-            foreach (var word in GetWordsFromString(provider.ReadFile(path)))
+            foreach (var word in parser.GetWordsFromString(provider.ReadFile(path)))
             {
                 if (filters.All(filter => !filter.Skips(word)))
                     continue;
@@ -19,15 +20,6 @@ namespace TagsCloudContainer.TextProcessor
                 words[word]++;
             }
             return words;
-        }
-
-        private static IEnumerable<Word> GetWordsFromString(string input)
-        {
-            var regex = new Regex("\\b(?:\\w|-)+\\b");
-
-            return regex.Matches(input)
-                .Cast<Match>()
-                .Select(w => new Word(w.Value));
         }
     }
 }

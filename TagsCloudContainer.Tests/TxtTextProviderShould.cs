@@ -13,7 +13,7 @@ namespace TagsCloudContainer.Tests
         }
 
         [Test]
-        public void ThrowException()
+        public void ThrowExceptionIfFileNotFounded()
         {
             Action act = () => _provider.ReadFile("NotExisted.txt");
 
