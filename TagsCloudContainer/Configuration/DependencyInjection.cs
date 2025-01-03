@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
+using TagsCloudContainer.TagGenerator;
 
 namespace TagsCloudContainer.Configuration;
 
@@ -14,7 +15,19 @@ public class DependencyInjection
         var container = new ContainerBuilder();
 
         container.RegisterType(config.PointGenerator)
-            .AsImplementedInterfaces();
+            .AsImplementedInterfaces()
+            .SingleInstance();
+
+        if (config.RandomColor)
+            container.RegisterType<RandomColorTagGenerator>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+        else
+        {
+            container.RegisterType<SingleColorTagGenerator>()
+            .AsImplementedInterfaces()
+                .SingleInstance();
+        }
 
 
         return container.Build();
