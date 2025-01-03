@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FluentAssertions;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
 using TagsCloudContainer.StringParsers;
 using TagsCloudContainer.TagGenerator;
 using TagsCloudContainer.TextProviders;
@@ -24,7 +19,6 @@ namespace TagsCloudContainer.Tests
                 new TxtTextProvider(), new RegexParser(), new BoringWordFilter());
             var generator = new RandomColorTagGenerator(processor, graphics, new Font("arial", 12));
             var result = generator.GenerateTags().First();
-
             
             result.Font.Name.Should().Be("Arial");
             result.Font.Size.Should().Be(36);

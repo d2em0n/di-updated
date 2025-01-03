@@ -13,7 +13,7 @@ namespace TagsCloudContainer.TextProcessor
             var words = new Dictionary<Word, int>();
             foreach (var word in parser.GetWordsFromString(provider.ReadFile(path)))
             {
-                if (filters.All(filter => !filter.Skips(word)))
+                if (filters.Any(filter => !filter.Skips(word)))
                     continue;
 
                 if (!words.ContainsKey(word))
