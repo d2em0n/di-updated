@@ -2,6 +2,7 @@
 
 namespace TagsCloudContainer.PointGenerators
 {
+    [Label("Сердце")]
     public class HeartShaped : IPointGenerator
     {
         public IEnumerable<Point> GeneratePoints(Point start)

@@ -2,6 +2,7 @@
 
 namespace TagsCloudContainer.PointGenerators
 {
+    [Label("Стринги")]
     public class DeltaShaped : IPointGenerator
     {
         public IEnumerable<Point> GeneratePoints(Point start)

@@ -1,5 +1,6 @@
 ﻿namespace TagsCloudContainer.TextProviders;
 
+[Label(".txt")]
 public class TxtTextProvider : ITextProvider
 {
     public string ReadFile(string filePath)

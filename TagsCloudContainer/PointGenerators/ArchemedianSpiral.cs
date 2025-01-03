@@ -2,6 +2,7 @@
 
 namespace TagsCloudContainer.PointGenerators
 {
+    [Label("Спираль")]
     public class ArchemedianSpiral : IPointGenerator
     {
         public IEnumerable<Point> GeneratePoints(Point start)
