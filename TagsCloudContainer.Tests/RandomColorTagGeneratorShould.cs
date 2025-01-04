@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using System.Drawing;
+using TagsCloudContainer.ColorProviders;
 using TagsCloudContainer.StringParsers;
 using TagsCloudContainer.TagGenerator;
 using TagsCloudContainer.TextProviders;
@@ -17,8 +18,9 @@ namespace TagsCloudContainer.Tests
 
             var processor = new TextProcessor.TextProcessor(@"TextFile1.txt",
                 new TxtTextProvider(), new RegexParser(), new BoringWordFilter());
-            var generator = new RandomColorTagGenerator(processor, graphics, new Font("arial", 12));
-            var result = generator.GenerateTags().First();
+            var words = processor.WordFrequencies();
+            var generator = new TagGenerator.TagGenerator(new RandomColorProvider(), graphics, new Font("arial", 12));
+            var result = generator.GenerateTags(words).First();
             
             result.Font.Name.Should().Be("Arial");
             result.Font.Size.Should().Be(36);

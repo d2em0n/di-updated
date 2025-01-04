@@ -18,16 +18,16 @@ public class DependencyInjection
             .AsImplementedInterfaces()
             .SingleInstance();
 
-        if (config.RandomColor)
-            container.RegisterType<RandomColorTagGenerator>()
-                .AsImplementedInterfaces()
-                .SingleInstance();
-        else
-        {
-            container.RegisterType<SingleColorTagGenerator>()
-            .AsImplementedInterfaces()
-                .SingleInstance();
-        }
+        //if (config.RandomColor)
+        //    container.RegisterType<TagGenerator.TagGenerator>()
+        //        .AsImplementedInterfaces()
+        //        .SingleInstance();
+        //else
+        //{
+        //    container.RegisterType<SingleColorTagGenerator>()
+        //    .AsImplementedInterfaces()
+        //        .SingleInstance();
+        //}
 
 
         return container.Build();

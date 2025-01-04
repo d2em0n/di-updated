@@ -20,7 +20,7 @@ namespace TagsCloudContainer
             var filter = new BoringWordFilter();
             var parser = new RegexParser();
             var processor = new TextProcessor.TextProcessor(@"C:\test\test.txt", provider, parser, filter);
-            foreach (var word in processor.Words())
+            foreach (var word in processor.WordFrequencies())
             {
                 Console.WriteLine(word.Key.Value + " : " + word.Value);
             }

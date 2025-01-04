@@ -8,7 +8,7 @@ namespace TagsCloudContainer.TextProcessor
     public class TextProcessor(string path, ITextProvider provider, IStringParser parser,
         params IWordFilter[] filters) : ITextProcessor
     {
-        public Dictionary<Word, int> Words()
+        public Dictionary<Word, int> WordFrequencies()
         {
             var words = new Dictionary<Word, int>();
             foreach (var word in parser.GetWordsFromString(provider.ReadFile(path)))

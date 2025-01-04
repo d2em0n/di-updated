@@ -6,6 +6,6 @@ namespace TagsCloudContainer.TextProcessor
 {
     public interface ITextProcessor
     {
-        public Dictionary<Word, int> Words();
+        public Dictionary<Word, int> WordFrequencies();
     }
 }

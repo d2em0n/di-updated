@@ -11,7 +11,7 @@ namespace TagsCloudContainer.Tests
         public void Process()
         {
             var result = new TextProcessor.TextProcessor(@"TextFile1.txt",
-                new TxtTextProvider(), new RegexParser(), new BoringWordFilter(), new ShortWordFilter()).Words();
+                new TxtTextProvider(), new RegexParser(), new BoringWordFilter(), new ShortWordFilter()).WordFrequencies();
 
             result.Count.Should().Be(3);
 
