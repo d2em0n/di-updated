@@ -85,31 +85,6 @@ namespace TagsCloudContainer
                     config.RandomColor = true;
                     break;
             }
-
-
-
-
-            //// Запрашиваем у пользователя ввод цвета
-            //Console.Write("Введите цвет текста (например, Red, Green): ");
-            //string userInput = Console.ReadLine();
-
-            //// Пробуем преобразовать ввод в ConsoleColor
-            //if (Enum.TryParse(userInput, true, out ConsoleColor selectedColor))
-            //{
-            //    // Устанавливаем цвет текста
-            //    Console.ForegroundColor = selectedColor;
-
-            //    // Выводим сообщение с выбранным цветом
-            //    Console.WriteLine("Выбранный цвет текста: " + userInput);
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Некорректный цвет. Попробуйте снова.");
-            //}
-
-            //// Сбрасываем цвет текста на стандартный
-            //Console.ResetColor();
-
         }
 
         private static void ConfigureCloudView(Config config)

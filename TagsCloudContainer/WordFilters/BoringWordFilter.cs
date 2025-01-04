@@ -1,4 +1,5 @@
-﻿namespace TagsCloudContainer.WordFilters
+﻿
+namespace TagsCloudContainer.WordFilters
 {
     public class BoringWordFilter : IWordFilter
     {
@@ -11,10 +12,6 @@
             "оно",
             "они"
         ];
-        public bool Skips(Word word)
-        {
-            return !_forbiddenWords.Contains(word.Value);
-        }
 
         public void AddBoringWord(Word word)
         {
@@ -24,6 +21,11 @@
         public void AddBoringWord(string word)
         {
             _forbiddenWords.Add(word);
+        }
+
+        public IEnumerable<Word> Process(IEnumerable<Word> words)
+        {
+            return words.Where(w => !_forbiddenWords.Contains(w.Value));
         }
     }
 }

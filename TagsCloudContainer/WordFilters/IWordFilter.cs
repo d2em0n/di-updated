@@ -2,6 +2,6 @@
 {
     public interface IWordFilter
     {
-        public bool Skips(Word word);
+        public IEnumerable<Word> Process(IEnumerable<Word> words);
     }
 }

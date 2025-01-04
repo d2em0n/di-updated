@@ -8,9 +8,9 @@ namespace TagsCloudContainer.WordFilters
 {
     public class ShortWordFilter : IWordFilter
     {
-        public bool Skips(Word word)
+        public IEnumerable<Word> Process(IEnumerable<Word> words)
         {
-            return word.Value.Length > 2;
+            return words.Where(w => w.Value.Length > 2);
         }
     }
 }
