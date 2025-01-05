@@ -3,9 +3,16 @@
 [Label(".txt")]
 public class TxtTextProvider : ITextProvider
 {
-    public string ReadFile(string filePath)
+    private readonly string _filePath;
+
+    public TxtTextProvider(string filePath)
     {
-        if (!File.Exists(filePath)) throw new FileNotFoundException();
-        return File.ReadAllText(filePath).ToLower();
+        _filePath = filePath;
+    }
+
+    public string ReadFile()
+    {
+        if (!File.Exists(_filePath)) throw new FileNotFoundException();
+        return File.ReadAllText(_filePath).ToLower();
     }
 }

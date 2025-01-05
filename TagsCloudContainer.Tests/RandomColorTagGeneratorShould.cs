@@ -16,8 +16,8 @@ namespace TagsCloudContainer.Tests
             var bitmap = new Bitmap(1, 1);
             using var graphics = Graphics.FromImage(bitmap);
 
-            var processor = new TextProcessor.TextProcessor(@"TextFile1.txt",
-                new TxtTextProvider(), new RegexParser(), new BoringWordFilter());
+            var processor = new TextProcessor.TextProcessor(
+                new TxtTextProvider(@"TextFile1.txt"), new RegexParser(), new BoringWordFilter());
             var words = processor.WordFrequencies();
             var generator = new TagGenerator.TagGenerator(new RandomColorProvider(), graphics, new Font("arial", 12));
             var result = generator.GenerateTags(words).First();

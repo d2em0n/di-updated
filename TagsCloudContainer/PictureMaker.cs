@@ -5,7 +5,20 @@ namespace TagsCloudContainer;
 
 public class PictureMaker
 {
-    public void DrawPicture(IPointGenerator pointGenerator, IEnumerable<Tag> tags, string filename, Point startPoint)
+    private readonly IPointGenerator pointGenerator;
+    private readonly IEnumerable<Tag> tags;
+    private readonly string fileName;
+    private readonly Point startPoint;
+
+    public PictureMaker(IPointGenerator pointGenerator, IEnumerable<Tag> tags, string fileName, Point startPoint)
+    {
+        this.pointGenerator = pointGenerator;
+        this.tags = tags;
+        this.fileName = fileName;
+        this.startPoint = startPoint;
+    }
+
+    public void DrawPicture()
     {
         var layout = new CloudLayout(startPoint, pointGenerator);
         var image = new Bitmap(layout.Size.Width, layout.Size.Height);
@@ -14,7 +27,7 @@ public class PictureMaker
             var rectangle = layout.PutNextRectangle(tag.Frame);
             DrawTag(image, rectangle, tag);
         }
-        image.Save(filename);
+        image.Save(fileName);
     }
 
     private static void DrawTag(Bitmap image, Rectangle rectangle, Tag tag)

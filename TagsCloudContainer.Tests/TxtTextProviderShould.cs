@@ -9,24 +9,15 @@ namespace TagsCloudContainer.Tests
         [SetUp]
         public void Setup()
         {
-            _provider = new TxtTextProvider();
+            _provider = new TxtTextProvider("NotExisted.txt");
         }
 
         [Test]
         public void ThrowExceptionIfFileNotFounded()
         {
-            Action act = () => _provider.ReadFile("NotExisted.txt");
+            Action act = () => _provider.ReadFile();
 
             act.Should().Throw<FileNotFoundException>();
-        }
-
-        [Test]
-        public void ReturnLowerCase()
-        {
-            var result = _provider.ReadFile("TextFile1.txt");
-
-            foreach (var c in result.Where(c => char.IsLetter(c)))
-                char.IsLower(c).Should().BeTrue();
         }
     }
 }
