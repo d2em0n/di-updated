@@ -21,8 +21,12 @@ public class DependencyInjection
         if (config.FilePath.EndsWith(".txt"))
             container.RegisterType<TxtTextProvider>()
                 .As<ITextProvider>()
-                .WithParameter("_filePath", config.FilePath)
+                .WithParameter("filePath", config.FilePath)
                 .SingleInstance();
+
+        container.RegisterType<TextProcessor>()
+            .As<ITextProcessor>()
+            .SingleInstance();
 
         container.RegisterType(config.PointGenerator)
             .As<IPointGenerator>()
@@ -47,19 +51,14 @@ public class DependencyInjection
             .WithParameter("defaultFont", config.Font)
             .SingleInstance();
         
-        container.RegisterType<TextProcessor>()
-            .As<ITextProcessor>()
-            .SingleInstance();
+      
 
-        container.RegisterType<ToLowerFilter>().AsSelf()
+        container.RegisterType<ToLowerFilter>().As<IWordFilter>()
             .SingleInstance();
-        container.RegisterType<ShortWordFilter>().AsSelf()
+        container.RegisterType<ShortWordFilter>().As<IWordFilter>()
             .SingleInstance();
-        container.RegisterType<BoringWordFilter>().AsSelf()
+        container.RegisterType<BoringWordFilter>().As<IWordFilter>()
             .SingleInstance();
-
-        //container.RegisterType<CloudLayout>().AsSelf()
-        //    .SingleInstance();
 
         container.RegisterType<PictureMaker>()
             .AsSelf()

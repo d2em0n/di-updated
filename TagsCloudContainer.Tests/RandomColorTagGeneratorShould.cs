@@ -19,7 +19,7 @@ namespace TagsCloudContainer.Tests
             var processor = new TextProcessor.TextProcessor(
                 new TxtTextProvider(@"TextFile1.txt"), new RegexParser(), new BoringWordFilter());
             var words = processor.WordFrequencies();
-            var generator = new TagGenerator.TagGenerator(new RandomColorProvider(), graphics, new Font("arial", 12));
+            var generator = new TagGenerator.TagGenerator(new RandomColorProvider(),  new Font("arial", 12));
             var result = generator.GenerateTags(words).First();
             
             result.Font.Name.Should().Be("Arial");

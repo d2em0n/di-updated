@@ -15,10 +15,10 @@ namespace TagsCloudContainer.TagGenerator
         private readonly Font _defaultFont;
 
        
-        public TagGenerator(IColorProvider colorProvider, Graphics graphics, Font defaultFont )
+        public TagGenerator(IColorProvider colorProvider, Font defaultFont )
         {
             _colorProvider = colorProvider;
-            _graphics = graphics;
+            _graphics = Graphics.FromImage(new Bitmap(1, 1));
             _defaultFont = defaultFont;
         }
 
@@ -26,7 +26,7 @@ namespace TagsCloudContainer.TagGenerator
         {
             return wordsDictionary
                 .Select(kvp => new Tag(kvp.Key, SetFont(_defaultFont, kvp.Value), _colorProvider.GetColor(),
-                    SetFrameSize(kvp.Key, _defaultFont, 1, _graphics)));
+                    SetFrameSize(kvp.Key, SetFont(_defaultFont, kvp.Value), 1, _graphics)));
         }
 
         private static Size SetFrameSize(Word word, Font font, int frameGap, Graphics graphics)

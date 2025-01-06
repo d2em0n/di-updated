@@ -1,5 +1,7 @@
 ﻿using System.Drawing;
 using TagsCloudContainer.PointGenerators;
+using TagsCloudContainer.TagGenerator;
+using TagsCloudContainer.TextProcessor;
 
 namespace TagsCloudContainer;
 
@@ -10,10 +12,11 @@ public class PictureMaker
     private readonly string fileName;
     private readonly Point startPoint;
 
-    public PictureMaker(IPointGenerator pointGenerator, IEnumerable<Tag> tags, string fileName, Point startPoint)
+    public PictureMaker(IPointGenerator pointGenerator, ITagsGenerator tagGenerator,
+        ITextProcessor textProcessor, string fileName, Point startPoint)
     {
         this.pointGenerator = pointGenerator;
-        this.tags = tags;
+        this.tags = tagGenerator.GenerateTags(textProcessor.WordFrequencies());
         this.fileName = fileName;
         this.startPoint = startPoint;
     }
