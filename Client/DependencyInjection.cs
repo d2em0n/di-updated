@@ -17,13 +17,11 @@ public class DependencyInjection
     {
         var container = new ContainerBuilder();
         container.RegisterInstance(config).AsSelf();
-
-        if (config.FilePath.EndsWith(".txt"))
-            container.RegisterType<TxtTextProvider>()
-                .As<ITextProvider>()
-                .WithParameter("filePath", config.FilePath)
-                .SingleInstance();
-
+        
+        container.RegisterType(config.SupportedReadingFormats[Path.GetExtension(config.FilePath)])
+            .As<ITextProvider>()
+            .WithParameter("filePath", config.FilePath)
+            .SingleInstance();
         container.RegisterType<TextProcessor>()
             .As<ITextProcessor>()
             .SingleInstance();
@@ -50,8 +48,8 @@ public class DependencyInjection
             .As<ITagsGenerator>()
             .WithParameter("defaultFont", config.Font)
             .SingleInstance();
-        
-      
+
+
 
         container.RegisterType<ToLowerFilter>().As<IWordFilter>()
             .SingleInstance();

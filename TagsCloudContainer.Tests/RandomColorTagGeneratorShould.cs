@@ -2,7 +2,6 @@
 using System.Drawing;
 using TagsCloudContainer.ColorProviders;
 using TagsCloudContainer.StringParsers;
-using TagsCloudContainer.TagGenerator;
 using TagsCloudContainer.TextProviders;
 using TagsCloudContainer.WordFilters;
 

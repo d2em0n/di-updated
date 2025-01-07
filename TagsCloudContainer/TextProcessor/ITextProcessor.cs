@@ -1,8 +1,4 @@
-﻿using TagsCloudContainer.StringParsers;
-using TagsCloudContainer.TextProviders;
-using TagsCloudContainer.WordFilters;
-
-namespace TagsCloudContainer.TextProcessor
+﻿namespace TagsCloudContainer.TextProcessor
 {
     public interface ITextProcessor
     {

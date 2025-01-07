@@ -17,10 +17,11 @@ namespace Client
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var config = new Config();
 
+            ConfigureSupportedReadingFormats(config);
             ConfigureFileSource(config);
             ConfigureCloudView(config);
             ConfigureColor(config);
@@ -32,6 +33,15 @@ namespace Client
             using var scope = container.BeginLifetimeScope();
             scope.Resolve<PictureMaker>().DrawPicture();
             Console.WriteLine($"результат сохранен в {config.PicturePath}");
+        }
+
+        private static void ConfigureSupportedReadingFormats(Config config)
+        {
+            Console.WriteLine("Поддерживаются следующие форматы файлов для чтения:");
+            var textProviders = FindImplemetations<ITextProvider>();
+            foreach (var point in textProviders)
+                Console.WriteLine("\t" + point.Key);
+            config.SupportedReadingFormats = textProviders;
         }
 
         private static void ConfigureFont(Config config)
@@ -62,7 +72,7 @@ namespace Client
         {
             Console.WriteLine("Введите имя файла источника тэгов");
             var inp = Console.ReadLine();
-            config.FilePath = inp.Length == 0 ? @"C:\\shpora\\Container\\di-updated\\Client\\TestFile.txt" : inp;
+            config.FilePath = inp.Length == 0 ? @"TestFile.txt" : inp;
         }
 
         private static string GetLabel(RainbowColors color)

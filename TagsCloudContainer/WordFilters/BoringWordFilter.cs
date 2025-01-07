@@ -1,5 +1,4 @@
-﻿
-namespace TagsCloudContainer.WordFilters
+﻿namespace TagsCloudContainer.WordFilters
 {
     public class BoringWordFilter : IWordFilter
     {

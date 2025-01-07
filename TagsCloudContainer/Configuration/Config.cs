@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TagsCloudContainer.PointGenerators;
+﻿using System.Drawing;
 
 namespace TagsCloudContainer.Configuration;
 
@@ -21,5 +15,7 @@ public class Config
     public Point StartPoint { get; set; }
 
     public Font Font { get; set; }
+
+    public Dictionary<string, Type> SupportedReadingFormats { get; set; }
 
 }

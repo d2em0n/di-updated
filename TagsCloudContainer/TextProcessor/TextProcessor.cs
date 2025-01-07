@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using TagsCloudContainer.StringParsers;
+﻿using TagsCloudContainer.StringParsers;
 using TagsCloudContainer.TextProviders;
 using TagsCloudContainer.WordFilters;
 
