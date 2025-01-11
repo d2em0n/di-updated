@@ -1,10 +1,5 @@
 ﻿using System.Drawing;
-using System.Linq;
 using TagsCloudContainer.ColorProviders;
-using TagsCloudContainer.StringParsers;
-using TagsCloudContainer.TextProcessor;
-using TagsCloudContainer.TextProviders;
-using TagsCloudContainer.WordFilters;
 
 namespace TagsCloudContainer.TagGenerator
 {

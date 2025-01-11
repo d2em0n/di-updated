@@ -1,16 +1,9 @@
 ﻿using System.Drawing;
 using System.Reflection;
-using System.Threading.Channels;
 using TagsCloudContainer.Configuration;
 using TagsCloudContainer.PointGenerators;
-using TagsCloudContainer.StringParsers;
 using TagsCloudContainer.TextProviders;
-using TagsCloudContainer.WordFilters;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.ComponentModel;
 using TagsCloudContainer;
-using TagsCloudContainer.TextProcessor;
 using Autofac;
 
 namespace Client
