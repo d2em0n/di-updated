@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using System.Drawing;
 using TagsCloudContainer.ColorProviders;
 using TagsCloudContainer.StringParsers;
 using TagsCloudContainer.TextProviders;
