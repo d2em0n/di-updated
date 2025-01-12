@@ -8,7 +8,6 @@ namespace TagsCloudContainer.Tests
     [TestFixture]
     public class CloudLayoutShould
     {
-        private CloudLayout layout;
         [TestCase(1, 2, TestName = "Odd coordinate value results in an even size value")]
         [TestCase(2, 5, TestName = "Even coordinate value results in an odd size value")]
         public void MakeRightSizeLayout(int coordinateValue, int sizeValue)
@@ -16,7 +15,7 @@ namespace TagsCloudContainer.Tests
             var center = new Point(coordinateValue, coordinateValue);
             var size = new Size(sizeValue, sizeValue);
 
-            layout = new CloudLayout(center, new ArchemedianSpiral());
+            var layout = new CloudLayout(center, new ArchemedianSpiral());
 
             layout.Size.Should().BeEquivalentTo(size);
         }
@@ -36,7 +35,7 @@ namespace TagsCloudContainer.Tests
         [Test]
         public void PutNextRectangle_ShouldKeepEnteredSize()
         {
-            layout = new CloudLayout(new Point(5, 5), new ArchemedianSpiral());
+            var layout = new CloudLayout(new Point(5, 5), new ArchemedianSpiral());
             var enteredSize = new Size(3, 4);
             var returnedSize = layout.PutNextRectangle(enteredSize).Size;
 

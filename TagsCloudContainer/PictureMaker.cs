@@ -24,7 +24,7 @@ public class PictureMaker
     public void DrawPicture()
     {
         var layout = new CloudLayout(_startPoint, _pointGenerator);
-        var image = new Bitmap(layout.Size.Width, layout.Size.Height);
+        using var image = new Bitmap(layout.Size.Width, layout.Size.Height);
         foreach (var tag in _tags)
         {
             var rectangle = layout.PutNextRectangle(tag.Frame);
@@ -35,10 +35,8 @@ public class PictureMaker
 
     private static void DrawTag(Bitmap image, Rectangle rectangle, Tag tag)
     {
-        var brush = new SolidBrush(tag.Color);
-        var formGraphics = Graphics.FromImage(image);
+        using var brush = new SolidBrush(tag.Color);
+        using var formGraphics = Graphics.FromImage(image);
         formGraphics.DrawString(tag.Word.Value, tag.Font, brush, rectangle.Location);
-        brush.Dispose();
-        formGraphics.Dispose();
     }
 }
