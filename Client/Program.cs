@@ -53,8 +53,8 @@ namespace Client
         {
             Console.WriteLine("Введите координаты центра поля для рисования" +
                               "\n При некорректном вводе координаты центра составят ( 1000, 1000)");
-            var xLine = Console.ReadLine();
-            var yLine = Console.ReadLine();
+            var xLine = ReadValue("Координата Х");
+            var yLine = ReadValue("Координата Y");
             if (int.TryParse(xLine, out var xResult) &&
                 int.TryParse(yLine, out var yResult))
                 config.StartPoint = new Point(xResult, yResult);
@@ -88,9 +88,9 @@ namespace Client
 
             Console.WriteLine("В случае неправильного ввода - цвет будет выбираться случайным образом");
             var inp = Console.ReadLine().ToLower();
-            if (colors.ContainsKey(inp))
+            if (colors.TryGetValue(inp, out var colorName))
             {
-                config.Color = Color.FromName(colors[inp].ToString());
+                config.Color = Color.FromName(colorName.ToString());
                 Console.WriteLine($"Выбран {inp} цвет");
             }
             else
@@ -106,8 +106,8 @@ namespace Client
                 Console.WriteLine("\t" + point.Key);
             Console.WriteLine("Введите, соблюдая орфографию");
             var pointGenerator = Console.ReadLine().ToLower();
-            if (pointGenerators.ContainsKey(pointGenerator))
-                config.PointGenerator = pointGenerators[pointGenerator];
+            if (pointGenerators.TryGetValue(pointGenerator, out var pointGeneratorName))
+                config.PointGenerator = pointGeneratorName;
             else
             {
                 Console.WriteLine("Такой формы не предусмотрено");
@@ -122,6 +122,12 @@ namespace Client
             return assembly.GetTypes()
                 .Where(t => type.IsAssignableFrom(t) && !t.IsInterface)
                 .ToDictionary(x => x.GetCustomAttribute<LabelAttribute>().LabelText.ToLower(), x => x);
+        }
+        
+        private static string? ReadValue(string? argName = null)
+        {
+            Console.Write($"{argName ?? ""}: ");
+            return Console.ReadLine();
         }
     }
 }
