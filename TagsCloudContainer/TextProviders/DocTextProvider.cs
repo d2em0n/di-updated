@@ -14,13 +14,11 @@ public class DocTextProvider : ITextProvider
 
     public string ReadFile()
     {
-        if (!File.Exists(_filePath)) throw new FileNotFoundException();
-        else
-        {
-            using var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read);
-            var document = new HWPFDocument(stream);
-            var range = document.GetRange();
-            return range.Text;
-        }
+        if (!File.Exists(_filePath))
+            throw new FileNotFoundException();
+        using var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read);
+        var document = new HWPFDocument(stream);
+        var range = document.GetRange();
+        return range.Text;
     }
 }

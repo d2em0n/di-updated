@@ -2,6 +2,6 @@
 {
     public interface IStringParser
     {
-        public IEnumerable<Word> GetWordsFromString(string input);
+        IEnumerable<Word> GetWordsFromString(string input);
     }
 }

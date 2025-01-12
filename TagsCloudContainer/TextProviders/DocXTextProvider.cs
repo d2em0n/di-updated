@@ -14,9 +14,9 @@ public class DocXTextProvider : ITextProvider
 
     public string ReadFile()
     {
-        if (!File.Exists(_filePath)) throw new FileNotFoundException();
-        else
-            using (var document = DocX.Load(_filePath))
-                return document.Text;
+        if (!File.Exists(_filePath)) 
+            throw new FileNotFoundException();
+        using var document = DocX.Load(_filePath);
+        return document.Text;
     }
 }
