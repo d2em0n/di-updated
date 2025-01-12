@@ -14,6 +14,6 @@ public class TxtTextProvider : ITextProvider
     {
         if (!File.Exists(_filePath)) 
             throw new FileNotFoundException();
-        return File.ReadAllText(_filePath).ToLower();
+        return File.ReadAllText(_filePath);
     }
 }

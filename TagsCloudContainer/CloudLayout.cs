@@ -5,10 +5,10 @@ namespace TagsCloudContainer
 {
     public class CloudLayout
     {
-        public readonly Point Center;
+        private readonly Point Center;
         public readonly Size Size;
         private readonly IEnumerable<Point> _points;
-        public List<Rectangle> Rectangles { get; set; }
+        private List<Rectangle> Rectangles { get; set; }
 
 
         public CloudLayout(Point center, IPointGenerator pointGenerator)
