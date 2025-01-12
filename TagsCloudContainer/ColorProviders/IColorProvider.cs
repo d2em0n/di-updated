@@ -4,5 +4,5 @@ namespace TagsCloudContainer.ColorProviders;
 
 public interface IColorProvider
 {
-    public Color GetColor();
+    Color GetColor();
 }

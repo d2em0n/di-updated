@@ -1,11 +1,13 @@
 ﻿using System.Drawing;
+using System.Runtime.CompilerServices;
 
 namespace TagsCloudContainer.ColorProviders;
 
-public class ColorProvider(Color color) : IColorProvider
+public class ColorProvider : IColorProvider
 {
-    public Color GetColor()
-    {
-        return color;
-    }
+    [CompilerGenerated] private readonly Color _color;
+
+    public ColorProvider(Color color) => _color = color;
+
+    public Color GetColor() => _color;
 }
