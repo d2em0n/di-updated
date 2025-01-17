@@ -1,10 +1,12 @@
 ﻿using System.Drawing;
+using System.Drawing.Text;
 using System.Reflection;
 using TagsCloudContainer.Configuration;
 using TagsCloudContainer.PointGenerators;
 using TagsCloudContainer.TextProviders;
 using TagsCloudContainer;
 using Autofac;
+using NPOI.SS.Util.CellWalk;
 
 namespace Client
 {
@@ -39,7 +41,21 @@ namespace Client
 
         private static void ConfigureFont(Config config)
         {
-            config.Font = new Font("arial", 12);
+            Console.WriteLine("Введите размер шрифта");
+            if (!int.TryParse(Console.ReadLine(), out var fontSize))
+                throw new Exception("invalid fontSize");
+
+                Console.WriteLine("Введите название шрифта");
+            var fontName = Console.ReadLine();
+            if (!CheckFont(fontName))
+                throw new Exception("invalid fontName");
+            config.Font = new Font(fontName, fontSize);
+        }
+
+        private static bool CheckFont(string fontName)
+        {
+            var fontCollection = new InstalledFontCollection();
+            return fontCollection.Families.Any(f => f.Name.Equals(fontName, StringComparison.InvariantCultureIgnoreCase));
         }
 
         private static void ConfigurePathToSave(Config config)
@@ -65,6 +81,8 @@ namespace Client
         {
             Console.WriteLine("Введите имя файла источника тэгов");
             var inp = Console.ReadLine();
+            if ((inp.Length != 0) && !config.SupportedReadingFormats.TryGetValue(Path.GetExtension(inp), out var textProvider))
+                throw new Exception("wrong file format for text source");
             config.FilePath = inp.Length == 0 ? @"TestFile.txt" : inp;
         }
 
@@ -95,7 +113,6 @@ namespace Client
             }
             else
                 Console.WriteLine("Цвет будет выбираться случайно");
-
         }
 
         private static void ConfigureCloudView(Config config)
@@ -123,7 +140,7 @@ namespace Client
                 .Where(t => type.IsAssignableFrom(t) && !t.IsInterface)
                 .ToDictionary(x => x.GetCustomAttribute<LabelAttribute>().LabelText.ToLower(), x => x);
         }
-        
+
         private static string? ReadValue(string? argName = null)
         {
             Console.Write($"{argName ?? ""}: ");
