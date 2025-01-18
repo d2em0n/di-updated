@@ -9,7 +9,7 @@ public class TextProcessor(ITextProvider provider, IStringParser parser,
 {
     public Dictionary<Word, int> WordFrequencies()
     {
-        var words = parser.GetWordsFromString(provider.ReadFile());
+        var words = parser.GetWordsFromString(provider.ReadFile().GetValueOrThrow());
         return filters.Aggregate(words, (current, filter) => filter.Process(current))
             .GroupBy(word => word)
             .ToDictionary(group => group.Key, group => group.Count());

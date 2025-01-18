@@ -2,5 +2,5 @@
 
 public interface ITextProvider
 {
-    public string ReadFile();
+    public Result<string> ReadFile();
 }

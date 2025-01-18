@@ -9,6 +9,7 @@ namespace TagsCloudContainer
         public readonly Size Size;
         private readonly IEnumerable<Point> _points;
         private List<Rectangle> Rectangles { get; set; }
+        private readonly Rectangle _frame;
 
 
         public CloudLayout(Point center, IPointGenerator pointGenerator)
@@ -19,6 +20,7 @@ namespace TagsCloudContainer
             Size = CountSize(center);
             Rectangles = [];
             _points = pointGenerator.GeneratePoints(Center);
+            _frame = new Rectangle(0, 0, Size.Width, Size.Height);
         }
 
         public CloudLayout(Size size, IPointGenerator pointGenerator)
@@ -27,6 +29,7 @@ namespace TagsCloudContainer
             Center = FindCenter(size);
             Rectangles = [];
             _points = pointGenerator.GeneratePoints(Center);
+            _frame = new Rectangle(0, 0, Size.Width, Size.Height);
         }
 
 
@@ -42,7 +45,7 @@ namespace TagsCloudContainer
             return new Point(size.Width / 2, size.Height / 2);
         }
 
-        public Rectangle PutNextRectangle(Size rectangleSize)
+        public Result<Rectangle> PutNextRectangle(Size rectangleSize)
         {
             foreach (var point in _points)
             {
@@ -50,8 +53,13 @@ namespace TagsCloudContainer
                     rectangleSize);
                 if (IntersectsWithAnyOther(supposed, Rectangles))
                     continue;
-                Rectangles.Add(supposed);
-                return supposed;
+                if (_frame.Contains(supposed))
+                {
+                    Rectangles.Add(supposed);
+                    return supposed;
+                }
+
+                return Result.Fail<Rectangle>("Вышли за границы рисунка");
             }
             throw new ArgumentException("Not Enough Points Generated");
         }

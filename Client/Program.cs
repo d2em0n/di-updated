@@ -16,13 +16,7 @@ namespace Client
         {
             var config = new Config();
 
-            var result = ConfigureSupportedReadingFormats(config)
-                .Then(ConfigureFileSource)
-                .Then(ConfigureCloudView)
-                .Then(ConfigureColor)
-                .Then(ConfigurePathToSave)
-                .Then(ConfigureStartPoint)
-                .Then(ConfigureFont);
+            var result = ConfigureApp(config);
 
             if (result.IsSuccess)
             {
@@ -31,17 +25,29 @@ namespace Client
                 scope.Resolve<PictureMaker>().DrawPicture();
                 Console.WriteLine($"результат сохранен в {config.PicturePath}");
             }
-            Console.WriteLine($"Ошибка конфигурирования: {result.Error}");
+            else
+                Console.WriteLine($"Ошибка конфигурирования: {result.Error}");
         }
 
-        private static Result<Config> ConfigureSupportedReadingFormats(Config config)
+        private static Result<Config> ConfigureApp(Config config)
+        {
+            return ConfigureSupportedReadingFormats(config).AsResult()
+                .Then(ConfigureFileSource)
+                .Then(ConfigureCloudView)
+                .Then(ConfigureColor)
+                .Then(ConfigurePathToSave)
+                .Then(ConfigureStartPoint)
+                .Then(ConfigureFont);
+        }
+
+        private static Config ConfigureSupportedReadingFormats(Config config)
         {
             Console.WriteLine("Поддерживаются следующие форматы файлов для чтения:");
             var textProviders = FindImplemetations<ITextProvider>();
             foreach (var point in textProviders)
                 Console.WriteLine("\t" + point.Key);
             config.SupportedReadingFormats = textProviders;
-            return Result.Ok(config);
+            return config;
         }
 
         private static Result<Config> ConfigureFont(Config config)
@@ -65,11 +71,11 @@ namespace Client
                 f => f.Name.Equals(fontName, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private static Result<Config> ConfigurePathToSave(Config config)
+        private static Config ConfigurePathToSave(Config config)
         {
             var inp = ReadValue("Введите полный путь и название файла для сохранения");
             config.PicturePath = inp.Length == 0 ? "1.bmp" : inp;
-            return Result.Ok(config);
+            return config;
         }
 
         private static Result<Config> ConfigureStartPoint(Config config)
@@ -88,8 +94,7 @@ namespace Client
 
         private static Result<Config> ConfigureFileSource(Config config)
         {
-            Console.WriteLine("Введите имя файла источника тэгов");
-            var inp = Console.ReadLine();
+            var inp = ReadValue("Введите имя файла источника тэгов");
             if ((inp.Length != 0) &&
                 !config.SupportedReadingFormats.TryGetValue(Path.GetExtension(inp), out var textProvider))
                 return Result.Fail<Config>("wrong file format for text source");
@@ -105,7 +110,7 @@ namespace Client
             return attribute.LabelText;
         }
 
-        private static Result<Config> ConfigureColor(Config config)
+        private static Config ConfigureColor(Config config)
         {
             Console.WriteLine("Выборите цвет из возможных:");
             var colors = Enum.GetValues(typeof(RainbowColors))
@@ -125,7 +130,7 @@ namespace Client
             else
                 Console.WriteLine("Цвет будет выбираться случайно");
 
-            return Result.Ok(config);
+            return config;
         }
 
         private static Result<Config> ConfigureCloudView(Config config)

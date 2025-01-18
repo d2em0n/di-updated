@@ -15,9 +15,9 @@ namespace TagsCloudContainer.Tests
         [Test]
         public void ThrowExceptionIfFileNotFounded()
         {
-            Action act = () => _provider.ReadFile();
+            var result = _provider.ReadFile();
 
-            act.Should().Throw<FileNotFoundException>();
+            result.Error.Should().Be("File NotExisted.txt does not exist");
         }
     }
 }

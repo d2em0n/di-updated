@@ -28,7 +28,7 @@ public class PictureMaker
         foreach (var tag in _tags)
         {
             var rectangle = layout.PutNextRectangle(tag.Frame);
-            DrawTag(image, rectangle, tag);
+            DrawTag(image, rectangle.GetValueOrThrow(), tag);
         }
         image.Save(_fileName);
     }

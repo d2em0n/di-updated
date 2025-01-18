@@ -11,9 +11,10 @@ namespace TagsCloudContainer.Tests
         [Test]
         public void SetRightFontSize()
         {
-            var processor = new TextProcessor.TextProcessor(
-                new TxtTextProvider(@"TextFile1.txt"),  new RegexParser(), new ToLowerFilter(), new BoringWordFilter());
-            var words = processor.WordFrequencies();
+            var words = new Dictionary<Word, int>()
+            {
+                {new Word("a"), 3}
+            };
             var generator = new TagGenerator.TagGenerator(new RandomColorProvider(),  new System.Drawing.Font("arial", 12));
             var result = generator.GenerateTags(words).First();
             
