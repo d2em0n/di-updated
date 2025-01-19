@@ -17,6 +17,6 @@ public class DocXTextProvider : ITextProvider
         if (!File.Exists(_filePath)) 
             return Result.Fail<string>($"File {_filePath} does not exist");
         using var document = DocX.Load(_filePath);
-        return document.Text;
+        return Result.Of(() => document.Text);
     }
 }

@@ -14,6 +14,6 @@ public class TxtTextProvider : ITextProvider
     {
         return !File.Exists(_filePath) 
             ? Result.Fail<string>($"File {_filePath} does not exist") 
-            : File.ReadAllText(_filePath);
+            : Result.Of(()=> File.ReadAllText(_filePath));
     }
 }

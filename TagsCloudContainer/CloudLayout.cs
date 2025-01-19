@@ -61,7 +61,7 @@ namespace TagsCloudContainer
 
                 return Result.Fail<Rectangle>("Вышли за границы рисунка");
             }
-            throw new ArgumentException("Not Enough Points Generated");
+            return Result.Fail<Rectangle>("Not Enough Points Generated");
         }
 
         public static bool IntersectsWithAnyOther(Rectangle supposed, List<Rectangle> others)

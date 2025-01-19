@@ -7,11 +7,13 @@ namespace TagsCloudContainer.TextProcessor;
 public class TextProcessor(ITextProvider provider, IStringParser parser,
     params IWordFilter[] filters) : ITextProcessor
 {
-    public Dictionary<Word, int> WordFrequencies()
+    public Result<Dictionary<Word, int>> WordFrequencies()
     {
-        var words = parser.GetWordsFromString(provider.ReadFile().GetValueOrThrow());
-        return filters.Aggregate(words, (current, filter) => filter.Process(current))
-            .GroupBy(word => word)
-            .ToDictionary(group => group.Key, group => group.Count());
+        return provider.ReadFile()
+            .Then(text => parser.GetWordsFromString(text))
+            .Then(words => filters.Aggregate(words, (current, filter) => filter.Process(current))
+        .GroupBy(word => word)
+        .ToDictionary(group => group.Key, group => group.Count()));
+        
     }
 }

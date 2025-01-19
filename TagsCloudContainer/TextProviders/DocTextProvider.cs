@@ -17,8 +17,6 @@ public class DocTextProvider : ITextProvider
         if (!File.Exists(_filePath))
             return new Result<string>($"File not found: {_filePath}");
         using var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read);
-        var document = new HWPFDocument(stream);
-        var range = document.GetRange();
-        return range.Text;
+        return Result.Of(() => new HWPFDocument(stream)).Then(document=> document.GetRange().Text);
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface ITextProcessor
     {
-        public Dictionary<Word, int> WordFrequencies();
+        public Result<Dictionary<Word, int>> WordFrequencies();
     }
 }

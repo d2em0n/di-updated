@@ -16,12 +16,17 @@ namespace Client
         {
             var config = new Config();
 
-            ConfigureApp(config).OnFail(error => Console.WriteLine($"Ошибка конфигурирования: {error}"));
-            
+            ConfigureApp(config)
+                .OnFail(error => Console.WriteLine($"Ошибка конфигурирования: {error}"))
+                .Then(Run);
+        }
+
+        private static void Run(Config config)
+        {
             var container = DependencyInjection.BuildContainer(config);
             using var scope = container.BeginLifetimeScope();
-            scope.Resolve<PictureMaker>().DrawPicture();
-            Console.WriteLine($"результат сохранен в {config.PicturePath}");
+            scope.Resolve<PictureMaker>().DrawPicture().OnFail(error => Console.WriteLine($"Ошибка обработки: {error}"))
+                .Then(a => Console.WriteLine($"результат сохранен в {config.PicturePath}"));
         }
 
         private static Result<Config> ConfigureApp(Config config)
