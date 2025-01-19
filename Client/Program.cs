@@ -16,17 +16,12 @@ namespace Client
         {
             var config = new Config();
 
-            var result = ConfigureApp(config);
-
-            if (result.IsSuccess)
-            {
-                var container = DependencyInjection.BuildContainer(config);
-                using var scope = container.BeginLifetimeScope();
-                scope.Resolve<PictureMaker>().DrawPicture();
-                Console.WriteLine($"результат сохранен в {config.PicturePath}");
-            }
-            else
-                Console.WriteLine($"Ошибка конфигурирования: {result.Error}");
+            ConfigureApp(config).OnFail(error => Console.WriteLine($"Ошибка конфигурирования: {error}"));
+            
+            var container = DependencyInjection.BuildContainer(config);
+            using var scope = container.BeginLifetimeScope();
+            scope.Resolve<PictureMaker>().DrawPicture();
+            Console.WriteLine($"результат сохранен в {config.PicturePath}");
         }
 
         private static Result<Config> ConfigureApp(Config config)
@@ -146,10 +141,9 @@ namespace Client
                 config.PointGenerator = pointGeneratorName;
                 return Result.Ok(config);
             }
-
             return Result.Fail<Config>("Такой формы не предусмотрено");
         }
-
+        
         private static Dictionary<string, Type> FindImplemetations<T>()
         {
             var assembly = Assembly.LoadFrom("TagsCloudContainer.dll");
@@ -159,7 +153,7 @@ namespace Client
                 .ToDictionary(x => x.GetCustomAttribute<LabelAttribute>().LabelText.ToLower(), x => x);
         }
 
-        private static string? ReadValue(string? argName = null)
+        private static string ReadValue(string? argName = null)
         {
             Console.Write($"{argName ?? ""}: ");
             return Console.ReadLine();
