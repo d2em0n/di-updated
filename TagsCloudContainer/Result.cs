@@ -74,26 +74,21 @@ public static class Result
             return Fail<None>(error ?? e.Message);
         }
     }
-
+}
+public static class ResultExtensions
+{
     public static Result<TOutput> Then<TInput, TOutput>(
         this Result<TInput> input,
         Func<TInput, TOutput> continuation)
     {
-        return input.Then(inp => Of(() => continuation(inp)));
-    }
-
-    public static Result<None> Then<TInput, TOutput>(
-        this Result<TInput> input,
-        Action<TInput> continuation)
-    {
-        return input.Then(inp => OfAction(() => continuation(inp)));
+        return input.Then(inp => Result.Of(() => continuation(inp)));
     }
 
     public static Result<None> Then<TInput>(
         this Result<TInput> input,
         Action<TInput> continuation)
     {
-        return input.Then(inp => OfAction(() => continuation(inp)));
+        return input.Then(inp => Result.OfAction(() => continuation(inp)));
     }
 
     public static Result<TOutput> Then<TInput, TOutput>(
@@ -102,7 +97,7 @@ public static class Result
     {
         return input.IsSuccess
             ? continuation(input.Value)
-            : Fail<TOutput>(input.Error);
+            : Result.Fail<TOutput>(input.Error);
     }
 
     public static Result<TInput> OnFail<TInput>(
@@ -118,7 +113,7 @@ public static class Result
         Func<string, string> replaceError)
     {
         if (input.IsSuccess) return input;
-        return Fail<TInput>(replaceError(input.Error));
+        return Result.Fail<TInput>(replaceError(input.Error));
     }
 
     public static Result<TInput> RefineError<TInput>(
@@ -128,3 +123,4 @@ public static class Result
         return input.ReplaceError(err => errorMessage + ". " + err);
     }
 }
+
