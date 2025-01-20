@@ -2,6 +2,6 @@
 {
     public interface ITagsGenerator
     {
-        Result<IEnumerable<Tag>> GenerateTags(Result<Dictionary<Word, int>> wordsDictionary);
+        IEnumerable<Tag> GenerateTags(Dictionary<Word, int> wordsDictionary);
     }
 }

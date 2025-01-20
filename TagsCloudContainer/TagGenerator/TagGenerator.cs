@@ -17,14 +17,11 @@ namespace TagsCloudContainer.TagGenerator
             _defaultFont = defaultFont;
         }
 
-        public Result<IEnumerable<Tag>> GenerateTags(Result<Dictionary<Word, int>> wordsDictionary)
+        public IEnumerable<Tag> GenerateTags(Dictionary<Word, int> wordsDictionary)
         {
-            if (!wordsDictionary.IsSuccess)
-                return Result.Fail<IEnumerable<Tag>>(wordsDictionary.Error);
-            var tags = wordsDictionary.Value
+            return wordsDictionary
                 .Select(kvp => new Tag(kvp.Key, SetFont(_defaultFont, kvp.Value), _colorProvider.GetColor(),
                     SetFrameSize(kvp.Key, SetFont(_defaultFont, kvp.Value), 1, _graphics)));
-            return Result.Ok(tags);
         }
 
         private static Size SetFrameSize(Word word, Font font, int frameGap, Graphics graphics)
