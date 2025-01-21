@@ -22,10 +22,15 @@ namespace TagsCloudContainer.TagGenerator
             var tagsResult =  wordsDictionary
                 .Select(kvp =>
                 {
-                    var color = _colorProvider.GetColor();
-                    if (!color.IsSuccess) return Result.Fail<Tag>(color.Error);
+                    var colorResult = _colorProvider.GetColor();
+                    if (!colorResult.IsSuccess) 
+                        return Result.Fail<Tag>(colorResult.Error);
+                    
+                    var frameSizeResult = Result.Of(() => SetFrameSize(kvp.Key, SetFont(_defaultFont, kvp.Value), 1, _graphics));
+                    if (!frameSizeResult.IsSuccess)
+                        return Result.Fail<Tag>(frameSizeResult.Error);
 
-                    return Result.Ok(new Tag(kvp.Key, SetFont(_defaultFont, kvp.Value), color.Value,
+                    return Result.Ok(new Tag(kvp.Key, SetFont(_defaultFont, kvp.Value), colorResult.Value,
                         SetFrameSize(kvp.Key, SetFont(_defaultFont, kvp.Value), 1, _graphics)));
                 });
             return Result.Ok(tagsResult.Select(t => t.Value))
@@ -34,6 +39,10 @@ namespace TagsCloudContainer.TagGenerator
 
         private static Size SetFrameSize(Word word, Font font, int frameGap, Graphics graphics)
         {
+            ArgumentNullException.ThrowIfNull(word);
+            ArgumentNullException.ThrowIfNull(font);
+            ArgumentNullException.ThrowIfNull(graphics);
+
             var rect = graphics.MeasureString(word.Value, font).ToSize();
             return new Size(rect.Width + frameGap, rect.Height + frameGap);
         }
