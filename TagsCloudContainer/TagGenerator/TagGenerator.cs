@@ -26,7 +26,11 @@ namespace TagsCloudContainer.TagGenerator
                     if (!colorResult.IsSuccess) 
                         return Result.Fail<Tag>(colorResult.Error);
                     
-                    var frameSizeResult = Result.Of(() => SetFrameSize(kvp.Key, SetFont(_defaultFont, kvp.Value), 1, _graphics));
+                    var fontResult = Result.Of(() => SetFont(_defaultFont, kvp.Value));
+                    if (!fontResult.IsSuccess)
+                        return Result.Fail<Tag>(fontResult.Error);
+                    
+                    var frameSizeResult = Result.Of(() => SetFrameSize(kvp.Key, fontResult.Value, 1, _graphics));
                     if (!frameSizeResult.IsSuccess)
                         return Result.Fail<Tag>(frameSizeResult.Error);
 
@@ -49,6 +53,9 @@ namespace TagsCloudContainer.TagGenerator
 
         private static Font SetFont(Font font, int amount)
         {
+            ArgumentNullException.ThrowIfNull(font);
+            if (amount <= 0) throw new ArgumentException(null, nameof(amount));
+            
             return new Font(font.FontFamily, font.Size * amount);
         }
     }
