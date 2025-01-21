@@ -25,7 +25,8 @@ namespace Client
         {
             var container = DependencyInjection.BuildContainer(config);
             using var scope = container.BeginLifetimeScope();
-            scope.Resolve<PictureMaker>().DrawPicture().OnFail(error => Console.WriteLine($"Ошибка обработки: {error}"))
+            scope.Resolve<PictureMaker>().DrawPicture()
+                .OnFail(error => Console.WriteLine($"Ошибка обработки: {error}"))
                 .Then(a => Console.WriteLine($"результат сохранен в {config.PicturePath}"));
         }
 

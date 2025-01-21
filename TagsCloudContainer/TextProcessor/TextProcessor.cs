@@ -14,6 +14,5 @@ public class TextProcessor(ITextProvider provider, IStringParser parser,
             .Then(words => filters.Aggregate(words, (current, filter) => filter.Process(current))
         .GroupBy(word => word)
         .ToDictionary(group => group.Key, group => group.Count()));
-        
     }
 }

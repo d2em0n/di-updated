@@ -27,20 +27,23 @@ public class PictureMaker
     {
         var layout = new CloudLayout(_startPoint, _pointGenerator);
         using var image = new Bitmap(layout.Size.Width, layout.Size.Height);
-        var wordsDictionary = _textProcessor.WordFrequencies();
-        if (!wordsDictionary.IsSuccess)
-            return Result.Fail<None>(wordsDictionary.Error);
-        var tags = _tagGenerator.GenerateTags(wordsDictionary.Value);
-        foreach (var tag in tags)
-        {
-            var rectangle = layout.PutNextRectangle(tag.Frame);
-            if (!rectangle.IsSuccess)
-                return Result.Fail<None>(rectangle.Error);;
-            DrawTag(image, rectangle.Value, tag);
+        
+        return _textProcessor.WordFrequencies()
+            .Then(wordsDict =>
+            {
+                var tags = _tagGenerator.GenerateTags(wordsDict);
+                foreach (var tag in tags)
+                {
+                    var rectangle = layout.PutNextRectangle(tag.Frame);
+                    if (!rectangle.IsSuccess)
+                        return Result.Fail<None>(rectangle.Error);;
+                    DrawTag(image, rectangle.Value, tag);
+                }
+                image.Save(_fileName);
+                return Result.Ok();
+            })
+            .OnFail(error => Result.Fail<None>(error));
         }
-        image.Save(_fileName);
-        return Result.Ok();
-    }
 
     private static void DrawTag(Bitmap image, Rectangle rectangle, Tag tag)
     {
