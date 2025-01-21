@@ -26,37 +26,41 @@ namespace TagsCloudContainer.TagGenerator
                     if (!colorResult.IsSuccess) 
                         return Result.Fail<Tag>(colorResult.Error);
                     
-                    var fontResult = Result.Of(() => SetFont(_defaultFont, kvp.Value));
+                    var fontResult = SetFont(_defaultFont, kvp.Value);
                     if (!fontResult.IsSuccess)
                         return Result.Fail<Tag>(fontResult.Error);
                     
-                    var frameSizeResult = Result.Of(() => SetFrameSize(kvp.Key, fontResult.Value, 1, _graphics));
+                    var frameSizeResult = SetFrameSize(kvp.Key, fontResult.Value, 1, _graphics);
                     if (!frameSizeResult.IsSuccess)
                         return Result.Fail<Tag>(frameSizeResult.Error);
 
-                    return Result.Ok(new Tag(kvp.Key, SetFont(_defaultFont, kvp.Value), colorResult.Value,
-                        SetFrameSize(kvp.Key, SetFont(_defaultFont, kvp.Value), 1, _graphics)));
+                    return Result.Ok(new Tag(kvp.Key, fontResult.Value, colorResult.Value,
+                        frameSizeResult.Value));
                 });
             return Result.Ok(tagsResult.Select(t => t.Value))
                 .OnFail(error => Result.Fail<Tag>(error));
         }
 
-        private static Size SetFrameSize(Word word, Font font, int frameGap, Graphics graphics)
+        private static Result<Size> SetFrameSize(Word? word, Font? font, int frameGap, Graphics? graphics)
         {
-            ArgumentNullException.ThrowIfNull(word);
-            ArgumentNullException.ThrowIfNull(font);
-            ArgumentNullException.ThrowIfNull(graphics);
+            if (word == null)
+                return Result.Fail<Size>("Word is null");
+            if (font == null)
+                return Result.Fail<Size>("Font is null");
+            if (frameGap <= 0)
+                return Result.Fail<Size>("Frame gap is lesser than 0");
+            if (graphics == null)
+                return Result.Fail<Size>("Graphics is null");
 
             var rect = graphics.MeasureString(word.Value, font).ToSize();
-            return new Size(rect.Width + frameGap, rect.Height + frameGap);
+            return Result.Ok(new Size(rect.Width + frameGap, rect.Height + frameGap));
         }
 
-        private static Font SetFont(Font font, int amount)
+        private static Result<Font> SetFont(Font? font, int amount)
         {
-            ArgumentNullException.ThrowIfNull(font);
-            if (amount <= 0) throw new ArgumentException(null, nameof(amount));
-            
-            return new Font(font.FontFamily, font.Size * amount);
+            if (amount <= 0)
+                return Result.Fail<Font>("Amount must be greater than 0");
+            return font == null ? Result.Fail<Font>("Font is null") : new Font(font.FontFamily, font.Size * amount).AsResult();
         }
     }
 }
