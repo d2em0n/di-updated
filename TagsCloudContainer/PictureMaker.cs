@@ -32,7 +32,8 @@ public class PictureMaker
             .Then(wordsDict =>
             {
                 var tags = _tagGenerator.GenerateTags(wordsDict);
-                foreach (var tag in tags)
+                if (!tags.IsSuccess) return new Result<None>(tags.Error);
+                foreach (var tag in tags.Value)
                 {
                     var rectangle = layout.PutNextRectangle(tag.Frame);
                     if (!rectangle.IsSuccess)
