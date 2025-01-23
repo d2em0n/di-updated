@@ -10,7 +10,6 @@ namespace TagsCloudContainer.StringParsers
             if (string.IsNullOrWhiteSpace(input))
                 return Result.Fail<IEnumerable<Word>>("Input cannot be empty");
             return Result.Ok(_regex.Matches(input)
-                .Cast<Match>()
                 .Select(w => new Word(w.Value)));
         }
     }
