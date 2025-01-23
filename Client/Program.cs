@@ -1,10 +1,12 @@
 ﻿using System.Drawing;
+using System.Drawing.Text;
 using System.Reflection;
 using TagsCloudContainer.Configuration;
 using TagsCloudContainer.PointGenerators;
 using TagsCloudContainer.TextProviders;
 using TagsCloudContainer;
 using Autofac;
+using NPOI.SS.Util.CellWalk;
 
 namespace Client
 {
@@ -14,42 +16,70 @@ namespace Client
         {
             var config = new Config();
 
-            ConfigureSupportedReadingFormats(config);
-            ConfigureFileSource(config);
-            ConfigureCloudView(config);
-            ConfigureColor(config);
-            ConfigurePathToSave(config);
-            ConfigureStartPoint(config);
-            ConfigureFont(config);
-
-            var container = DependencyInjection.BuildContainer(config);
-            using var scope = container.BeginLifetimeScope();
-            scope.Resolve<PictureMaker>().DrawPicture();
-            Console.WriteLine($"результат сохранен в {config.PicturePath}");
+            ConfigureApp(config)
+                .OnFail(error => Console.WriteLine($"Ошибка конфигурирования: {error}"))
+                .Then(Run);
         }
 
-        private static void ConfigureSupportedReadingFormats(Config config)
+        private static void Run(Config config)
+        {
+            var container = DependencyInjection.BuildContainer(config);
+            using var scope = container.BeginLifetimeScope();
+            scope.Resolve<PictureMaker>().DrawPicture()
+                .OnFail(error => Console.WriteLine($"Ошибка обработки: {error}"))
+                .Then(a => Console.WriteLine($"результат сохранен в {config.PicturePath}"));
+        }
+
+        private static Result<Config> ConfigureApp(Config config)
+        {
+            return ConfigureSupportedReadingFormats(config).AsResult()
+                .Then(ConfigureFileSource)
+                .Then(ConfigureCloudView)
+                .Then(ConfigureColor)
+                .Then(ConfigurePathToSave)
+                .Then(ConfigureStartPoint)
+                .Then(ConfigureFont);
+        }
+
+        private static Config ConfigureSupportedReadingFormats(Config config)
         {
             Console.WriteLine("Поддерживаются следующие форматы файлов для чтения:");
             var textProviders = FindImplemetations<ITextProvider>();
             foreach (var point in textProviders)
                 Console.WriteLine("\t" + point.Key);
             config.SupportedReadingFormats = textProviders;
+            return config;
         }
 
-        private static void ConfigureFont(Config config)
+        private static Result<Config> ConfigureFont(Config config)
         {
-            config.Font = new Font("arial", 12);
+            Console.WriteLine("Введите размер шрифта");
+            if (!int.TryParse(Console.ReadLine(), out var fontSize))
+                return Result.Fail<Config>("invalid fontSize");
+
+            Console.WriteLine("Введите название шрифта");
+            var fontName = Console.ReadLine();
+            if (!CheckFont(fontName))
+                return Result.Fail<Config>("invalid fontName");
+            config.Font = new Font(fontName, fontSize);
+            return Result.Ok(config);
         }
 
-        private static void ConfigurePathToSave(Config config)
+        private static bool CheckFont(string fontName)
         {
-            Console.WriteLine("Введите полный путь и название файла для сохранения");
-            var inp = Console.ReadLine();
+            var fontCollection = new InstalledFontCollection();
+            return fontCollection.Families.Any(
+                f => f.Name.Equals(fontName, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private static Config ConfigurePathToSave(Config config)
+        {
+            var inp = ReadValue("Введите полный путь и название файла для сохранения");
             config.PicturePath = inp.Length == 0 ? "1.bmp" : inp;
+            return config;
         }
 
-        private static void ConfigureStartPoint(Config config)
+        private static Result<Config> ConfigureStartPoint(Config config)
         {
             Console.WriteLine("Введите координаты центра поля для рисования" +
                               "\n При некорректном вводе координаты центра составят ( 1000, 1000)");
@@ -58,14 +88,19 @@ namespace Client
             if (int.TryParse(xLine, out var xResult) &&
                 int.TryParse(yLine, out var yResult))
                 config.StartPoint = new Point(xResult, yResult);
-            config.StartPoint = new Point(1000, 1000);
+            else
+                config.StartPoint = new Point(1000, 1000);
+            return Result.Ok(config);
         }
 
-        private static void ConfigureFileSource(Config config)
+        private static Result<Config> ConfigureFileSource(Config config)
         {
-            Console.WriteLine("Введите имя файла источника тэгов");
-            var inp = Console.ReadLine();
+            var inp = ReadValue("Введите имя файла источника тэгов");
+            if ((inp.Length != 0) &&
+                !config.SupportedReadingFormats.TryGetValue(Path.GetExtension(inp), out var textProvider))
+                return Result.Fail<Config>("wrong file format for text source");
             config.FilePath = inp.Length == 0 ? @"TestFile.txt" : inp;
+            return Result.Ok(config);
         }
 
         private static string GetLabel(RainbowColors color)
@@ -76,7 +111,7 @@ namespace Client
             return attribute.LabelText;
         }
 
-        private static void ConfigureColor(Config config)
+        private static Config ConfigureColor(Config config)
         {
             Console.WriteLine("Выборите цвет из возможных:");
             var colors = Enum.GetValues(typeof(RainbowColors))
@@ -86,8 +121,8 @@ namespace Client
             foreach (var color in colors)
                 Console.WriteLine("\t" + color.Key);
 
-            Console.WriteLine("В случае неправильного ввода - цвет будет выбираться случайным образом");
-            var inp = Console.ReadLine().ToLower();
+            var inp = ReadValue("В случае неправильного ввода - цвет будет выбираться случайным образом")
+                .ToLower();
             if (colors.TryGetValue(inp, out var colorName))
             {
                 config.Color = Color.FromName(colorName.ToString());
@@ -96,9 +131,10 @@ namespace Client
             else
                 Console.WriteLine("Цвет будет выбираться случайно");
 
+            return config;
         }
 
-        private static void ConfigureCloudView(Config config)
+        private static Result<Config> ConfigureCloudView(Config config)
         {
             Console.WriteLine("Выберите внешний вид облака из возможных:");
             var pointGenerators = FindImplemetations<IPointGenerator>();
@@ -107,14 +143,13 @@ namespace Client
             Console.WriteLine("Введите, соблюдая орфографию");
             var pointGenerator = Console.ReadLine().ToLower();
             if (pointGenerators.TryGetValue(pointGenerator, out var pointGeneratorName))
-                config.PointGenerator = pointGeneratorName;
-            else
             {
-                Console.WriteLine("Такой формы не предусмотрено");
-                ConfigureCloudView(config);
+                config.PointGenerator = pointGeneratorName;
+                return Result.Ok(config);
             }
+            return Result.Fail<Config>("Такой формы не предусмотрено");
         }
-
+        
         private static Dictionary<string, Type> FindImplemetations<T>()
         {
             var assembly = Assembly.LoadFrom("TagsCloudContainer.dll");
@@ -123,8 +158,8 @@ namespace Client
                 .Where(t => type.IsAssignableFrom(t) && !t.IsInterface)
                 .ToDictionary(x => x.GetCustomAttribute<LabelAttribute>().LabelText.ToLower(), x => x);
         }
-        
-        private static string? ReadValue(string? argName = null)
+
+        private static string ReadValue(string? argName = null)
         {
             Console.Write($"{argName ?? ""}: ");
             return Console.ReadLine();

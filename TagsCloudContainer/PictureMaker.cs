@@ -8,7 +8,8 @@ namespace TagsCloudContainer;
 public class PictureMaker
 {
     private readonly IPointGenerator _pointGenerator;
-    private readonly IEnumerable<Tag> _tags;
+    private readonly ITagsGenerator _tagGenerator;
+    private readonly ITextProcessor _textProcessor;
     private readonly string _fileName;
     private readonly Point _startPoint;
 
@@ -16,21 +17,25 @@ public class PictureMaker
         ITextProcessor textProcessor, string fileName, Point startPoint)
     {
         _pointGenerator = pointGenerator;
-        _tags = tagGenerator.GenerateTags(textProcessor.WordFrequencies());
+        _tagGenerator = tagGenerator;
+        _textProcessor = textProcessor;
         _fileName = fileName;
         _startPoint = startPoint;
     }
 
-    public void DrawPicture()
+    public Result<None> DrawPicture()
     {
         var layout = new CloudLayout(_startPoint, _pointGenerator);
         using var image = new Bitmap(layout.Size.Width, layout.Size.Height);
-        foreach (var tag in _tags)
-        {
-            var rectangle = layout.PutNextRectangle(tag.Frame);
-            DrawTag(image, rectangle, tag);
-        }
-        image.Save(_fileName);
+
+        return _textProcessor.WordFrequencies()
+            .Then(wordsDict => _tagGenerator.GenerateTags(wordsDict))
+            .ForEach(tag =>
+            {
+                var rectange = layout.PutNextRectangle(tag.Frame)
+                    .Then(rect => DrawTag(image, rect, tag))
+                    .Then(_ => image.Save(_fileName));
+            });
     }
 
     private static void DrawTag(Bitmap image, Rectangle rectangle, Tag tag)

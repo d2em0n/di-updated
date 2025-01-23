@@ -13,9 +13,9 @@ namespace TagsCloudContainer.Tests
             var result = new TextProcessor.TextProcessor(
                 new TxtTextProvider(@"TextFile1.txt"), new RegexParser(), new ToLowerFilter(), new BoringWordFilter(), new ShortWordFilter()).WordFrequencies();
 
-            result.Count.Should().Be(3);
+            result.GetValueOrThrow().Count.Should().Be(3);
 
-            result.MaxBy(word => word.Value).Value.Should().Be(3);
+            result.GetValueOrThrow().MaxBy(word => word.Value).Value.Should().Be(3);
         }
     }
 }

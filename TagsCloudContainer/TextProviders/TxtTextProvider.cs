@@ -10,10 +10,10 @@ public class TxtTextProvider : ITextProvider
         _filePath = filePath;
     }
 
-    public string ReadFile()
+    public Result<string> ReadFile()
     {
-        if (!File.Exists(_filePath)) 
-            throw new FileNotFoundException();
-        return File.ReadAllText(_filePath);
+        return !File.Exists(_filePath) 
+            ? Result.Fail<string>($"File {_filePath} does not exist") 
+            : Result.Of(()=> File.ReadAllText(_filePath));
     }
 }

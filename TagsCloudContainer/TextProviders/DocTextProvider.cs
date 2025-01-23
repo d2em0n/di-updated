@@ -12,13 +12,12 @@ public class DocTextProvider : ITextProvider
         _filePath = filePath;
     }
 
-    public string ReadFile()
+    public Result<string> ReadFile()
     {
         if (!File.Exists(_filePath))
-            throw new FileNotFoundException();
+            return new Result<string>($"File not found: {_filePath}");
         using var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read);
-        var document = new HWPFDocument(stream);
-        var range = document.GetRange();
-        return range.Text;
+        return Result.Of(() => new HWPFDocument(stream))
+            .Then(document=> document.GetRange().Text);
     }
 }

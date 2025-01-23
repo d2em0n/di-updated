@@ -37,7 +37,7 @@ namespace TagsCloudContainer.Tests
         {
             var layout = new CloudLayout(new Point(5, 5), new ArchemedianSpiral());
             var enteredSize = new Size(3, 4);
-            var returnedSize = layout.PutNextRectangle(enteredSize).Size;
+            var returnedSize = layout.PutNextRectangle(enteredSize).GetValueOrThrow().Size;
 
             returnedSize.Should().BeEquivalentTo(enteredSize);
         }

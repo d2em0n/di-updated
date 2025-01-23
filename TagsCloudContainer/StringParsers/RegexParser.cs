@@ -5,11 +5,12 @@ namespace TagsCloudContainer.StringParsers
     public class RegexParser : IStringParser
     {
         private readonly Regex _regex = new("\\b(?:\\w|-)+\\b", RegexOptions.Compiled);
-        public IEnumerable<Word> GetWordsFromString(string input)
+        public Result<IEnumerable<Word>> GetWordsFromString(string input)
         {
-            return _regex.Matches(input)
-                .Cast<Match>()
-                .Select(w => new Word(w.Value));
+            if (string.IsNullOrWhiteSpace(input))
+                return Result.Fail<IEnumerable<Word>>("Input cannot be empty");
+            return Result.Ok(_regex.Matches(input)
+                .Select(w => new Word(w.Value)));
         }
     }
 }
