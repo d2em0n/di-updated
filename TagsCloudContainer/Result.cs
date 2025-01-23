@@ -122,5 +122,13 @@ public static class ResultExtensions
     {
         return input.ReplaceError(err => errorMessage + ". " + err);
     }
+
+    public static Result<None> ForEach<TInput>(this Result<IEnumerable<TInput>> input, Action<TInput> action)
+    {
+        if (!input.IsSuccess) return Result.Fail<None>(input.Error);
+        foreach (var item in input.Value)
+            action(item);
+        return Result.Ok();
+    }
 }
 
