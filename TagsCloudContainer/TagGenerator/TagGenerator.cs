@@ -19,26 +19,25 @@ namespace TagsCloudContainer.TagGenerator
 
         public Result<IEnumerable<Tag>> GenerateTags(Dictionary<Word, int> wordsDictionary)
         {
-            var tagsResult =  wordsDictionary
-                .Select(kvp =>
-                {
-                    var colorResult = _colorProvider.GetColor();
-                    if (!colorResult.IsSuccess) 
-                        return Result.Fail<Tag>(colorResult.Error);
-                    
-                    var fontResult = SetFont(_defaultFont, kvp.Value);
-                    if (!fontResult.IsSuccess)
-                        return Result.Fail<Tag>(fontResult.Error);
-                    
-                    var frameSizeResult = SetFrameSize(kvp.Key, fontResult.Value, 1, _graphics);
-                    if (!frameSizeResult.IsSuccess)
-                        return Result.Fail<Tag>(frameSizeResult.Error);
+            var tagsResults = new List<Result<Tag>>();
 
-                    return Result.Ok(new Tag(kvp.Key, fontResult.Value, colorResult.Value,
-                        frameSizeResult.Value));
-                });
-            return Result.Ok(tagsResult.Select(t => t.Value))
-                .OnFail(error => Result.Fail<Tag>(error));
+            foreach (var kvp in wordsDictionary)
+            {
+                var colorResult = _colorProvider.GetColor();
+                if (!colorResult.IsSuccess)
+                    return Result.Fail<IEnumerable<Tag>>(colorResult.Error);
+
+                var fontResult = SetFont(_defaultFont, kvp.Value);
+                if (!fontResult.IsSuccess)
+                    return Result.Fail<IEnumerable<Tag>>(fontResult.Error);
+
+                var frameSizeResult = SetFrameSize(kvp.Key, fontResult.Value, 1, _graphics);
+                if (!frameSizeResult.IsSuccess)
+                    return Result.Fail<IEnumerable<Tag>>(frameSizeResult.Error);
+               
+                tagsResults.Add(Result.Ok(new Tag(kvp.Key, fontResult.Value, colorResult.Value, frameSizeResult.Value)));
+            }
+            return Result.Ok(tagsResults.Select(t => t.Value));
         }
 
         private static Result<Size> SetFrameSize(Word? word, Font? font, int frameGap, Graphics? graphics)
